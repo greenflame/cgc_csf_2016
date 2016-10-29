@@ -13,8 +13,9 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import sample.models.PlayerType;
-import sample.models.Point;
+import sample.models.geometry.Point;
 import sample.models.World;
+import sample.models.result.Obstacle;
 import sample.models.result.Troop;
 import sample.models.result.troops.Knight;
 
@@ -29,11 +30,18 @@ public class MainController {
         world = new World();
 
         // Test troop
-        (new Timeline(new KeyFrame(Duration.millis(1000),
-                (ae) -> world.getTroops().add(new Knight(new Point(2, 1), world, PlayerType.FIRST))))).play();
+        Timeline t1 = new Timeline(new KeyFrame(Duration.millis(300),
+                (ae) -> world.getTroops().add(new Knight(new Point(2, 1 + Math.random() * 0.001), world, PlayerType.FIRST))));
+        t1.setCycleCount(Animation.INDEFINITE);
+        t1.play();
 
-        (new Timeline(new KeyFrame(Duration.millis(2500),
-                (ae) -> world.getTroops().add(new Knight(new Point(10, 15), world, PlayerType.SECOND))))).play();
+        Timeline t2 = new Timeline(new KeyFrame(Duration.millis(900),
+                (ae) -> world.getTroops().add(new Knight(new Point(10, 15), world, PlayerType.SECOND))));
+        t2.setCycleCount(Animation.INDEFINITE);
+        t2.play();
+
+        // Obstacle
+        world.getObstacles().add(new Obstacle(new Point(4, 6), 2, world));
 
         // Main loop
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> tick()));
@@ -70,10 +78,14 @@ public class MainController {
 
         // Units
         for (Troop troop : world.getTroops()) {
-            gc.setFill(Color.SEAGREEN);
+            if (troop.getOwner() == PlayerType.FIRST) {
+                gc.setFill(Color.SEAGREEN);
+            } else {
+                gc.setFill(Color.DARKBLUE);
+            }
 
             double k = troop.getDeployer().isFinished()
-                    ? troop.getLifeCrystal().getHealthRest() / troop.getLifeCrystal().getTotalHealth()
+                    ? 1f * troop.getLifeCrystal().getHealthRest() / troop.getLifeCrystal().getTotalHealth()
                     : (1 - troop.getDeployer().getTimeRemain() / troop.getDeployer().getInterval());
 
             gc.fillArc((troop.getPosition().getX() - 0.5) * cellSize.getX(),
@@ -87,9 +99,19 @@ public class MainController {
             gc.setFill(Color.BLACK);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);
-            gc.fillText("Knight, 200hp, p1",
-                    (troop.getPosition().getX()) * cellSize.getX(),
-                    (troop.getPosition().getY() - 0.8) * cellSize.getY());
+//            gc.fillText("Knight, 200hp, p1",
+//                    (troop.getPosition().getX()) * cellSize.getX(),
+//                    (troop.getPosition().getY() - 0.8) * cellSize.getY());
+        }
+
+        // Obstacles
+        for (Obstacle obstacle : world.getObstacles()) {
+            gc.setFill(Color.DARKSLATEGRAY);
+
+            gc.strokeRect((obstacle.getPosition().getX() - obstacle.getRadius()) * cellSize.getX(),
+                    (obstacle.getPosition().getY() - obstacle.getRadius()) * cellSize.getY(),
+                    obstacle.getRadius() * 2 * cellSize.getX(),
+                    obstacle.getRadius() * 2 * cellSize.getY());
         }
     }
 }

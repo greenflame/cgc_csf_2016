@@ -1,7 +1,7 @@
 package sample.models.result.troops;
 
 import sample.models.PlayerType;
-import sample.models.Point;
+import sample.models.geometry.Point;
 import sample.models.World;
 import sample.models.result.Troop;
 

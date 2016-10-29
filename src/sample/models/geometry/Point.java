@@ -1,4 +1,4 @@
-package sample.models;
+package sample.models.geometry;
 
 /**
  * Created by Alexander on 25/10/16.
@@ -60,6 +60,10 @@ public class Point {
 
     public double distanceTo(Point other) {
         return this.sub(other).length();
+    }
+
+    public boolean isZero() {
+        return x == 0 && y == 0;
     }
 
     @Override

@@ -2,7 +2,7 @@ package sample.models.result;
 
 import sample.models.Dynamic;
 import sample.models.Owned;
-import sample.models.Point;
+import sample.models.geometry.Point;
 import sample.models.World;
 
 /**

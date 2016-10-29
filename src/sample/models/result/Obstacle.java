@@ -1,6 +1,6 @@
 package sample.models.result;
 
-import sample.models.Point;
+import sample.models.geometry.Point;
 import sample.models.Unit;
 import sample.models.World;
 

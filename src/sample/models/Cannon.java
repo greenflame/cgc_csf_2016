@@ -26,6 +26,13 @@ public class Cannon implements Dynamic {
         return recharger;
     }
 
+    public void attack(LifeCrystal lifeCrystal) {
+        if (recharger.isFinished()) {
+            lifeCrystal.damage(damage);
+            recharger.reload();
+        }
+    }
+
     @Override
     public void process(double time) {
         recharger.process(time);
