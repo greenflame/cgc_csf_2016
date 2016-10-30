@@ -1,4 +1,4 @@
-package sample.models;
+package sample.models.modules;
 
 /**
  * Created by Alexander on 26/10/16.
@@ -20,8 +20,8 @@ public class LifeCrystal {
         return healthRest;
     }
 
-    public void damage(int harm) {
-        healthRest = Math.max(0, healthRest - harm);
+    public void damage(int damage) {
+        healthRest = Math.max(0, healthRest - damage);
     }
 
     public boolean isDamaged() {

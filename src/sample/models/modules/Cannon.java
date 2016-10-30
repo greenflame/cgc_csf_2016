@@ -1,4 +1,6 @@
-package sample.models;
+package sample.models.modules;
+
+import sample.models.Dynamic;
 
 /**
  * Created by Alexander on 26/10/16.
@@ -8,7 +10,7 @@ public class Cannon implements Dynamic {
     private double range;
     private StopWatch recharger;
 
-    public Cannon(int damage, float range, float reloadTime) {
+    public Cannon(int damage, double range, double reloadTime) {
         this.damage = damage;
         this.range = range;
         this.recharger = new StopWatch(reloadTime);

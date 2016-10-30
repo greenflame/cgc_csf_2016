@@ -11,11 +11,12 @@ import sample.models.result.Troop;
 public class Knight extends Troop {
     public Knight(Point position, World world, PlayerType owner) {
         super(position,
-                0.5,  // Radius,
+                0,  // Rotation
                 world,
-                1.3,  // Speed,
+                0.5,  // Radius,
                 3,  // Cost,
                 1.1f,  // HitSpeed,
+                1.3f,  // Speed,
                 1,  // DeployTime,
                 0,  // Range,
                 1,  // Count,

@@ -1,4 +1,6 @@
-package sample.models;
+package sample.models.modules;
+
+import sample.models.Dynamic;
 
 /**
  * Created by Alexander on 26/10/16.

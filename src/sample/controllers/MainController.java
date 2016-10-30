@@ -16,6 +16,7 @@ import sample.models.PlayerType;
 import sample.models.geometry.Point;
 import sample.models.World;
 import sample.models.result.Obstacle;
+import sample.models.result.Tower;
 import sample.models.result.Troop;
 import sample.models.result.troops.Knight;
 
@@ -30,18 +31,15 @@ public class MainController {
         world = new World();
 
         // Test troop
-        Timeline t1 = new Timeline(new KeyFrame(Duration.millis(300),
+        Timeline t1 = new Timeline(new KeyFrame(Duration.millis(1000),
                 (ae) -> world.getTroops().add(new Knight(new Point(2, 1 + Math.random() * 0.001), world, PlayerType.FIRST))));
         t1.setCycleCount(Animation.INDEFINITE);
         t1.play();
 
-        Timeline t2 = new Timeline(new KeyFrame(Duration.millis(900),
-                (ae) -> world.getTroops().add(new Knight(new Point(10, 15), world, PlayerType.SECOND))));
+        Timeline t2 = new Timeline(new KeyFrame(Duration.millis(2000),
+                (ae) -> world.getTroops().add(new Knight(new Point(10, 15 + Math.random() * 0.001), world, PlayerType.SECOND))));
         t2.setCycleCount(Animation.INDEFINITE);
         t2.play();
-
-        // Obstacle
-        world.getObstacles().add(new Obstacle(new Point(4, 6), 2, world));
 
         // Main loop
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> tick()));
@@ -55,43 +53,84 @@ public class MainController {
         label.setText("Simulation time: " + world.getTime());
     }
 
+    private Color colorForPlayer(PlayerType player) {
+        switch (player) {
+            case FIRST:
+                return Color.rgb(60, 130, 100);
+            case SECOND:
+                return Color.rgb(130, 120, 60);
+        }
+        return Color.BLACK;
+    }
+
     public void renderMap(World world) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.setFill(Color.WHITE);
+        // Clear
+        gc.setFill(Color.rgb(210, 210, 230));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        Point cellSize = new Point(canvas.getWidth() / world.getWidth(),
-                canvas.getHeight() / world.getHeight());
+        double scale = Math.min(canvas.getWidth(), canvas.getHeight()) / Math.max(world.getWidth(), world.getHeight());
 
-        // Background
+//        renderChess(gc, world, scale);
+        renderObstacles(gc, world, scale);
+        renderTowers(gc, world, scale);
+        renderGrid(gc, world, scale);
+        renderUnits(gc, world, scale);
+    }
+
+    private void renderGrid(GraphicsContext gc, World world, double scale) {
+        gc.setStroke(Color.WHITE);
+
         for (int i = 0; i < world.getWidth(); i++) {
-            for (int j = 0; j < world.getHeight(); j++) {
-                if ((i + j) % 2 == 0) {
-                    gc.setFill(Color.LIGHTGRAY);
-                } else {
-                    gc.setFill(Color.WHITE);
-                }
-                gc.fillRect(j * cellSize.getX(), i * cellSize.getY(), cellSize.getX(), cellSize.getY());
-            }
+            gc.strokeLine(i * scale + 0.5,
+                    0,
+                    i * scale + 0.5,
+                    world.getHeight() * scale);
         }
 
-        // Units
+        for (int i = 0; i < world.getHeight(); i++) {
+            gc.strokeLine(0,
+                    i * scale + 0.5,
+                    world.getWidth() * scale,
+                    i * scale + 0.5);
+        }
+    }
+
+    private void renderTowers(GraphicsContext gc, World world, double scale) {
+        for (Tower tower : world.getTowers()) {
+            gc.setFill(colorForPlayer(tower.getOwner()));
+
+            gc.fillRect((tower.getPosition().getX() - tower.getHalfSide()) * scale,
+                    (tower.getPosition().getY() - tower.getHalfSide()) * scale,
+                    tower.getHalfSide() * 2 * scale,
+                    tower.getHalfSide() * 2 * scale);
+        }
+    }
+
+    private void renderObstacles(GraphicsContext gc, World world, double scale) {
+        for (Obstacle obstacle : world.getObstacles()) {
+            gc.setFill(Color.rgb(50, 100, 150));
+
+            gc.fillRect((obstacle.getPosition().getX() - obstacle.getHalfSide()) * scale,
+                    (obstacle.getPosition().getY() - obstacle.getHalfSide()) * scale,
+                    obstacle.getHalfSide() * 2 * scale,
+                    obstacle.getHalfSide() * 2 * scale);
+        }
+    }
+
+    private void renderUnits(GraphicsContext gc, World world, double scale) {
         for (Troop troop : world.getTroops()) {
-            if (troop.getOwner() == PlayerType.FIRST) {
-                gc.setFill(Color.SEAGREEN);
-            } else {
-                gc.setFill(Color.DARKBLUE);
-            }
+            gc.setFill(colorForPlayer(troop.getOwner()));
 
             double k = troop.getDeployer().isFinished()
                     ? 1f * troop.getLifeCrystal().getHealthRest() / troop.getLifeCrystal().getTotalHealth()
                     : (1 - troop.getDeployer().getTimeRemain() / troop.getDeployer().getInterval());
 
-            gc.fillArc((troop.getPosition().getX() - 0.5) * cellSize.getX(),
-                    (troop.getPosition().getY() - 0.5) * cellSize.getY(),
-                    cellSize.getX(),
-                    cellSize.getY(),
+            gc.fillArc((troop.getPosition().getX() - 0.5) * scale,
+                    (troop.getPosition().getY() - 0.5) * scale,
+                    scale,
+                    scale,
                     0,
                     360 * k,
                     ArcType.ROUND);
@@ -99,19 +138,19 @@ public class MainController {
             gc.setFill(Color.BLACK);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);
-//            gc.fillText("Knight, 200hp, p1",
-//                    (troop.getPosition().getX()) * cellSize.getX(),
-//                    (troop.getPosition().getY() - 0.8) * cellSize.getY());
         }
+    }
 
-        // Obstacles
-        for (Obstacle obstacle : world.getObstacles()) {
-            gc.setFill(Color.DARKSLATEGRAY);
-
-            gc.strokeRect((obstacle.getPosition().getX() - obstacle.getRadius()) * cellSize.getX(),
-                    (obstacle.getPosition().getY() - obstacle.getRadius()) * cellSize.getY(),
-                    obstacle.getRadius() * 2 * cellSize.getX(),
-                    obstacle.getRadius() * 2 * cellSize.getY());
+    private void renderChess(GraphicsContext gc, World world, double scale) {
+        for (int i = 0; i < world.getWidth(); i++) {
+            for (int j = 0; j < world.getHeight(); j++) {
+                if ((i + j) % 2 == 0) {
+                    gc.setFill(Color.LIGHTGRAY);
+                } else {
+                    gc.setFill(Color.WHITE);
+                }
+                gc.fillRect(j * scale, i * scale, scale, scale);
+            }
         }
     }
 }
