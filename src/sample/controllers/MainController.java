@@ -13,7 +13,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import sample.models.PlayerType;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.World;
 import sample.models.result.Obstacle;
 import sample.models.result.Tower;
@@ -32,12 +32,12 @@ public class MainController {
 
         // Test troop
         Timeline t1 = new Timeline(new KeyFrame(Duration.millis(1000),
-                (ae) -> world.getTroops().add(new Knight(new Point(2, 1 + Math.random() * 0.001), world, PlayerType.FIRST))));
+                (ae) -> world.getTroops().add(new Knight(new Point2d(2, 1 + Math.random() * 0.001), world, PlayerType.FIRST))));
         t1.setCycleCount(Animation.INDEFINITE);
         t1.play();
 
         Timeline t2 = new Timeline(new KeyFrame(Duration.millis(2000),
-                (ae) -> world.getTroops().add(new Knight(new Point(10, 15 + Math.random() * 0.001), world, PlayerType.SECOND))));
+                (ae) -> world.getTroops().add(new Knight(new Point2d(10, 17 + Math.random() * 0.001), world, PlayerType.SECOND))));
         t2.setCycleCount(Animation.INDEFINITE);
         t2.play();
 
@@ -101,8 +101,8 @@ public class MainController {
         for (Tower tower : world.getTowers()) {
             gc.setFill(colorForPlayer(tower.getOwner()));
 
-            gc.fillRect((tower.getPosition().getX() - tower.getHalfSide()) * scale,
-                    (tower.getPosition().getY() - tower.getHalfSide()) * scale,
+            gc.fillRect((tower.getPosition().x - tower.getHalfSide()) * scale,
+                    (tower.getPosition().y - tower.getHalfSide()) * scale,
                     tower.getHalfSide() * 2 * scale,
                     tower.getHalfSide() * 2 * scale);
         }
@@ -112,8 +112,8 @@ public class MainController {
         for (Obstacle obstacle : world.getObstacles()) {
             gc.setFill(Color.rgb(50, 100, 150));
 
-            gc.fillRect((obstacle.getPosition().getX() - obstacle.getHalfSide()) * scale,
-                    (obstacle.getPosition().getY() - obstacle.getHalfSide()) * scale,
+            gc.fillRect((obstacle.getPosition().x - obstacle.getHalfSide()) * scale,
+                    (obstacle.getPosition().y - obstacle.getHalfSide()) * scale,
                     obstacle.getHalfSide() * 2 * scale,
                     obstacle.getHalfSide() * 2 * scale);
         }
@@ -127,8 +127,8 @@ public class MainController {
                     ? 1f * troop.getLifeCrystal().getHealthRest() / troop.getLifeCrystal().getTotalHealth()
                     : (1 - troop.getDeployer().getTimeRemain() / troop.getDeployer().getInterval());
 
-            gc.fillArc((troop.getPosition().getX() - 0.5) * scale,
-                    (troop.getPosition().getY() - 0.5) * scale,
+            gc.fillArc((troop.getPosition().x - 0.5) * scale,
+                    (troop.getPosition().y - 0.5) * scale,
                     scale,
                     scale,
                     0,

@@ -2,14 +2,14 @@ package sample.models.result.towers;
 
 import sample.models.PlayerType;
 import sample.models.World;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.result.Tower;
 
 /**
  * Created by Alexander on 29/10/16.
  */
 public class MainTower extends Tower {
-    public MainTower(Point position, World world, PlayerType owner) {
+    public MainTower(Point2d position, World world, PlayerType owner) {
         super(position,
                 0,  // Rotation
                 world,

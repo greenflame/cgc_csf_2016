@@ -1,7 +1,7 @@
 package sample.models;
 
 import sample.models.geometry.PhysicsSolver;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.result.Obstacle;
 import sample.models.result.Spell;
 import sample.models.result.Tower;
@@ -38,42 +38,42 @@ public class World implements Dynamic {
         height = 22;
 
         // Obstacles
-        this.getObstacles().add(new Obstacle(new Point(9.5, 7.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(10.5, 7.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(11.5, 7.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(12.5, 7.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(9.5, 7.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(10.5, 7.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(11.5, 7.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(12.5, 7.5), 0, this, 1));
 
-        this.getObstacles().add(new Obstacle(new Point(9.5, 14.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(10.5, 14.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(11.5, 14.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(12.5, 14.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(9.5, 14.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(10.5, 14.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(11.5, 14.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(12.5, 14.5), 0, this, 1));
 
-        this.getObstacles().add(new Obstacle(new Point(7.5, 9.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(7.5, 10.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(7.5, 11.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(7.5, 12.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 9.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 10.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 11.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 12.5), 0, this, 1));
 
-        this.getObstacles().add(new Obstacle(new Point(14.5, 9.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(14.5, 10.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(14.5, 11.5), 0, this, 1));
-        this.getObstacles().add(new Obstacle(new Point(14.5, 12.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 9.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 10.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 11.5), 0, this, 1));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 12.5), 0, this, 1));
 
-        this.getObstacles().add(new Obstacle(new Point(11, 11), 0, this, 2));
-        this.getObstacles().add(new Obstacle(new Point(7.5, 7.5), 0, this, 3));
-        this.getObstacles().add(new Obstacle(new Point(7.5, 14.5), 0, this, 3));
-        this.getObstacles().add(new Obstacle(new Point(14.5, 7.5), 0, this, 3));
-        this.getObstacles().add(new Obstacle(new Point(14.5, 14.5), 0, this, 3));
+        this.getObstacles().add(new Obstacle(new Point2d(11, 11), 0, this, 2));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 7.5), 0, this, 3));
+        this.getObstacles().add(new Obstacle(new Point2d(7.5, 14.5), 0, this, 3));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 7.5), 0, this, 3));
+        this.getObstacles().add(new Obstacle(new Point2d(14.5, 14.5), 0, this, 3));
 
         // Down player towers
-        this.getTowers().add(new MainTower(new Point(3, 19), this, PlayerType.FIRST));    // Main
-        this.getTowers().add(new DefenceTower(new Point(3, 11), this, PlayerType.FIRST));    // Up
-        this.getTowers().add(new DefenceTower(new Point(11, 19), this, PlayerType.FIRST));    // Right
-        this.getTowers().add(new DefenceTower(new Point(19, 19), this, PlayerType.FIRST));    // Right right
+        this.getTowers().add(new MainTower(new Point2d(3, 19), this, PlayerType.FIRST));    // Main
+        this.getTowers().add(new DefenceTower(new Point2d(3, 11), this, PlayerType.FIRST));    // Up
+        this.getTowers().add(new DefenceTower(new Point2d(11, 19), this, PlayerType.FIRST));    // Right
+        this.getTowers().add(new DefenceTower(new Point2d(19, 19), this, PlayerType.FIRST));    // Right right
 
-        this.getTowers().add(new MainTower(new Point(19, 3), this, PlayerType.SECOND));    // Main
-        this.getTowers().add(new DefenceTower(new Point(19, 11), this, PlayerType.SECOND));    // Down
-        this.getTowers().add(new DefenceTower(new Point(11, 3), this, PlayerType.SECOND));    // Left
-        this.getTowers().add(new DefenceTower(new Point(3, 3), this, PlayerType.SECOND));    // Left left
+        this.getTowers().add(new MainTower(new Point2d(19, 3), this, PlayerType.SECOND));    // Main
+        this.getTowers().add(new DefenceTower(new Point2d(19, 11), this, PlayerType.SECOND));    // Down
+        this.getTowers().add(new DefenceTower(new Point2d(11, 3), this, PlayerType.SECOND));    // Left
+        this.getTowers().add(new DefenceTower(new Point2d(3, 3), this, PlayerType.SECOND));    // Left left
     }
 
     public List<Troop> getTroops() {
@@ -138,7 +138,7 @@ public class World implements Dynamic {
     }
 
     private boolean processCollisions() {
-        Map<Troop, Point> resolvers = new HashMap<>();
+        Map<Troop, Point2d> resolvers = new HashMap<>();
 
         List<Troop> deployedTroops =
                 troops.stream().filter(t -> t.getDeployer().isFinished()).collect(Collectors.toList());
@@ -146,20 +146,20 @@ public class World implements Dynamic {
         // For each troop
         deployedTroops.forEach(subj -> {
             // Receive force from other
-            Point resolver = deployedTroops.stream()
+            Point2d resolver = deployedTroops.stream()
                     .filter(obj ->  obj != subj)
                     .map(obj -> PhysicsSolver.solveCollision(subj, obj))
-                    .reduce(new Point(0, 0), Point::add);
+                    .reduce(new Point2d(0, 0), Point2d::add);
 
             // From obstacles
             resolver = obstacles.stream()
                     .map(obj -> PhysicsSolver.solveCollision(subj, obj))
-                    .reduce(resolver, Point::add);
+                    .reduce(resolver, Point2d::add);
 
             // From towers
             resolver = towers.stream()
                     .map(obj -> PhysicsSolver.solveCollision(subj, obj))
-                    .reduce(resolver, Point::add);
+                    .reduce(resolver, Point2d::add);
 
             if (!resolver.isZero()) {
                 resolvers.put(subj, resolver);

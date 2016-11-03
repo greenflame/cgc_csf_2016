@@ -1,6 +1,6 @@
 package sample.models;
 
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 
 /**
  * Created by Alexander on 29/10/16.
@@ -8,7 +8,7 @@ import sample.models.geometry.Point;
 public class Square extends Body {
     private double side;
 
-    public Square(Point position, double rotation, World world, double side) {
+    public Square(Point2d position, double rotation, World world, double side) {
         super(position, rotation, world);
         this.side = side;
     }

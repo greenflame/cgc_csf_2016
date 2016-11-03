@@ -1,6 +1,6 @@
 package sample.models;
 
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 
 /**
  * Created by Alexander on 29/10/16.
@@ -8,7 +8,7 @@ import sample.models.geometry.Point;
 public class Circle extends Body {
     private double radius;
 
-    public Circle(Point position, double rotation, World world, double radius) {
+    public Circle(Point2d position, double rotation, World world, double radius) {
         super(position, rotation, world);
         this.radius = radius;
     }

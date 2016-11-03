@@ -1,7 +1,7 @@
 package sample.models.result;
 
 import sample.models.*;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.modules.Cannon;
 import sample.models.modules.LifeCrystal;
 
@@ -13,7 +13,7 @@ public abstract class Tower extends Square implements Dynamic, Owned {
     private LifeCrystal lifeCrystal;
     private PlayerType owner;
 
-    public Tower(Point position, double rotation, World world, double side,
+    public Tower(Point2d position, double rotation, World world, double side,
                  double hitSpeed, double range, int hitPoints, int damage, PlayerType owner) {
         super(position, rotation, world, side);
 

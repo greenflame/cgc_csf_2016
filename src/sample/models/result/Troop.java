@@ -1,7 +1,7 @@
 package sample.models.result;
 
 import sample.models.*;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.geometry.RouteSolver;
 import sample.models.modules.Cannon;
 import sample.models.modules.LifeCrystal;
@@ -19,7 +19,7 @@ public abstract class Troop extends Circle implements Dynamic, Owned {
     private StopWatch deployer;
     private PlayerType owner;
 
-    public Troop(Point position, double rotation, World world, double radius, int cost, double hitSpeed, double speed,
+    public Troop(Point2d position, double rotation, World world, double radius, int cost, double hitSpeed, double speed,
                  double deployTime, double range, int count, int hitPoints, int damage, PlayerType owner) {
         super(position, rotation, world, radius);
 
@@ -92,7 +92,7 @@ public abstract class Troop extends Circle implements Dynamic, Owned {
                         : this.getRadius() * 1.3f + aim.getRadius();
 
                 if (this.rawDistanceTo(aim) > computedRange) {
-                    Point direction = RouteSolver.direction(this, aim);
+                    Point2d direction = RouteSolver.direction(this, aim);
                     this.setPosition(this.getPosition().add(direction.mul(speed * time)));
                 } else {
                     this.cannon.attack(aim.lifeCrystal);

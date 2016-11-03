@@ -1,7 +1,7 @@
 package sample.models.result.troops;
 
 import sample.models.PlayerType;
-import sample.models.geometry.Point;
+import sample.models.geometry.primitives.Point2d;
 import sample.models.World;
 import sample.models.result.Troop;
 
@@ -9,7 +9,7 @@ import sample.models.result.Troop;
  * Created by Alexander on 26/10/16.
  */
 public class Knight extends Troop {
-    public Knight(Point position, World world, PlayerType owner) {
+    public Knight(Point2d position, World world, PlayerType owner) {
         super(position,
                 0,  // Rotation
                 world,
