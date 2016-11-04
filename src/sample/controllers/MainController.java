@@ -4,153 +4,89 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import sample.models.PlayerType;
-import sample.models.geometry.primitives.Point2d;
-import sample.models.World;
-import sample.models.result.Obstacle;
-import sample.models.result.Tower;
-import sample.models.result.Troop;
-import sample.models.result.troops.Knight;
+import sample.models.TowerWars;
+import sample.models.framework.GameWorld;
+import sample.models.framework.components.Clock;
+import sample.models.framework.components.Renderer;
+import sample.models.framework.components.WorldSize;
+import sample.models.framework.structures.Size2d;
 
 
 public class MainController {
-    public Label label;
+    public Label time;
     public Canvas canvas;
+    public TextArea state;
 
-    private World world;
+    private TowerWars world;
 
     public void test(ActionEvent actionEvent) {
-        world = new World();
-
-        // Test troop
-        Timeline t1 = new Timeline(new KeyFrame(Duration.millis(1000),
-                (ae) -> world.getTroops().add(new Knight(new Point2d(2, 1 + Math.random() * 0.001), world, PlayerType.FIRST))));
-        t1.setCycleCount(Animation.INDEFINITE);
-        t1.play();
-
-        Timeline t2 = new Timeline(new KeyFrame(Duration.millis(2000),
-                (ae) -> world.getTroops().add(new Knight(new Point2d(10, 17 + Math.random() * 0.001), world, PlayerType.SECOND))));
-        t2.setCycleCount(Animation.INDEFINITE);
-        t2.play();
+        world = new TowerWars();
 
         // Main loop
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> tick()));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> {
+            // Simulate
+            world.process(1f / 25f);
+
+            // Render
+            renderMap(world);
+
+            // Update time label
+            Clock clock = (Clock) (world.findByName("World").get(0).getComponents(Clock.class).get(0));
+            time.setText("Simulation time: " + clock.getTime());
+
+            // Update state label
+            state.setText(world.toString());
+        }));
+
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
-    public void tick() {
-        world.process(1f / 25f);
-        renderMap(world);
-        label.setText("Simulation time: " + world.getTime());
-    }
-
-    private Color colorForPlayer(PlayerType player) {
-        switch (player) {
-            case FIRST:
-                return Color.rgb(60, 130, 100);
-            case SECOND:
-                return Color.rgb(130, 120, 60);
-        }
-        return Color.BLACK;
-    }
-
-    public void renderMap(World world) {
+    private void renderMap(GameWorld world) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         // Clear
         gc.setFill(Color.rgb(210, 210, 230));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        double scale = Math.min(canvas.getWidth(), canvas.getHeight()) / Math.max(world.getWidth(), world.getHeight());
+        // Solve scale
+        Size2d worldSize = ((WorldSize) world.firstByName("World").firstComponentOfType(WorldSize.class)).getSize();
+        double scale = Math.min(canvas.getWidth(), canvas.getHeight()) / Math.max(worldSize.width, worldSize.height);
 
-//        renderChess(gc, world, scale);
-        renderObstacles(gc, world, scale);
-        renderTowers(gc, world, scale);
+        // Grid
         renderGrid(gc, world, scale);
-        renderUnits(gc, world, scale);
+
+        // Render all renderer components
+        world.findByType(Renderer.class).forEach(gameObject -> {
+            gameObject.getComponents(Renderer.class).forEach(component -> {
+                ((Renderer) component).render(gc, scale);
+            });
+        });
     }
 
-    private void renderGrid(GraphicsContext gc, World world, double scale) {
+    private void renderGrid(GraphicsContext gc, GameWorld world, double scale) {
+        Size2d worldSize = ((WorldSize) world.firstByName("World").firstComponentOfType(WorldSize.class)).getSize();
+
         gc.setStroke(Color.WHITE);
 
-        for (int i = 0; i < world.getWidth(); i++) {
+        for (int i = 0; i < worldSize.width; i++) {
             gc.strokeLine(i * scale + 0.5,
                     0,
                     i * scale + 0.5,
-                    world.getHeight() * scale);
+                    worldSize.height * scale);
         }
 
-        for (int i = 0; i < world.getHeight(); i++) {
+        for (int i = 0; i < worldSize.height; i++) {
             gc.strokeLine(0,
                     i * scale + 0.5,
-                    world.getWidth() * scale,
+                    worldSize.width * scale,
                     i * scale + 0.5);
-        }
-    }
-
-    private void renderTowers(GraphicsContext gc, World world, double scale) {
-        for (Tower tower : world.getTowers()) {
-            gc.setFill(colorForPlayer(tower.getOwner()));
-
-            gc.fillRect((tower.getPosition().x - tower.getHalfSide()) * scale,
-                    (tower.getPosition().y - tower.getHalfSide()) * scale,
-                    tower.getHalfSide() * 2 * scale,
-                    tower.getHalfSide() * 2 * scale);
-        }
-    }
-
-    private void renderObstacles(GraphicsContext gc, World world, double scale) {
-        for (Obstacle obstacle : world.getObstacles()) {
-            gc.setFill(Color.rgb(50, 100, 150));
-
-            gc.fillRect((obstacle.getPosition().x - obstacle.getHalfSide()) * scale,
-                    (obstacle.getPosition().y - obstacle.getHalfSide()) * scale,
-                    obstacle.getHalfSide() * 2 * scale,
-                    obstacle.getHalfSide() * 2 * scale);
-        }
-    }
-
-    private void renderUnits(GraphicsContext gc, World world, double scale) {
-        for (Troop troop : world.getTroops()) {
-            gc.setFill(colorForPlayer(troop.getOwner()));
-
-            double k = troop.getDeployer().isFinished()
-                    ? 1f * troop.getLifeCrystal().getHealthRest() / troop.getLifeCrystal().getTotalHealth()
-                    : (1 - troop.getDeployer().getTimeRemain() / troop.getDeployer().getInterval());
-
-            gc.fillArc((troop.getPosition().x - 0.5) * scale,
-                    (troop.getPosition().y - 0.5) * scale,
-                    scale,
-                    scale,
-                    0,
-                    360 * k,
-                    ArcType.ROUND);
-
-            gc.setFill(Color.BLACK);
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setTextBaseline(VPos.CENTER);
-        }
-    }
-
-    private void renderChess(GraphicsContext gc, World world, double scale) {
-        for (int i = 0; i < world.getWidth(); i++) {
-            for (int j = 0; j < world.getHeight(); j++) {
-                if ((i + j) % 2 == 0) {
-                    gc.setFill(Color.LIGHTGRAY);
-                } else {
-                    gc.setFill(Color.WHITE);
-                }
-                gc.fillRect(j * scale, i * scale, scale, scale);
-            }
         }
     }
 }

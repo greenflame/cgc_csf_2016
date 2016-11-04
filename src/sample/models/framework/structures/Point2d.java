@@ -1,9 +1,10 @@
-package sample.models.geometry.primitives;
+package sample.models.framework.structures;
 
 /**
  * Created by Alexander on 25/10/16.
  */
 public class Point2d {
+
     public final double x;
 
     public final double y;

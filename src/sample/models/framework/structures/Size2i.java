@@ -1,9 +1,10 @@
-package sample.models.geometry.primitives;
+package sample.models.framework.structures;
 
 /**
  * Created by Alexander on 03/11/16.
  */
 public class Size2i {
+
     public final int width;
 
     public final int height;

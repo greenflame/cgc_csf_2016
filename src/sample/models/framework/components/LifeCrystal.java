@@ -1,13 +1,19 @@
-package sample.models.modules;
+package sample.models.framework.components;
+
+import sample.models.framework.Component;
+import sample.models.framework.GameObject;
 
 /**
- * Created by Alexander on 26/10/16.
+ * Created by Alexander on 03/11/16.
  */
-public class LifeCrystal {
+public class LifeCrystal extends Component {
+
     private int totalHealth;
+
     private int healthRest;
 
-    public LifeCrystal(int totalHealth) {
+    public LifeCrystal(GameObject gameObject, int totalHealth) {
+        super(gameObject);
         this.totalHealth = totalHealth;
         this.healthRest = totalHealth;
     }

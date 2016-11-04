@@ -4,11 +4,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
 <GridPane fx:controller="sample.controllers.MainController" xmlns:fx="http://javafx.com/fxml" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <VBox spacing="10">
+    <HBox spacing="10">
         <Canvas fx:id="canvas" width="660" height="660"/>
-        <Label fx:id="label" text="ih"/>
-        <Button onAction="#test" text="Test"/>
-    </VBox>
+
+        <VBox spacing="10">
+            <Label text="Simulation time:"/>
+            <Label fx:id="time" text="ih"/>
+
+            <Label text="World state:"/>
+            <TextArea fx:id="state" wrapText="true"/>
+
+            <Button onAction="#test" text="Test"/>
+        </VBox>
+    </HBox>
 </GridPane>
