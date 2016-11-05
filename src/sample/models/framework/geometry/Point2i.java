@@ -1,4 +1,4 @@
-package sample.models.framework.structures;
+package sample.models.framework.geometry;
 
 /**
  * Created by Alexander on 03/11/16.

@@ -2,7 +2,7 @@ package sample.models.framework.components;
 
 import sample.models.framework.Component;
 import sample.models.framework.GameObject;
-import sample.models.framework.structures.Point2d;
+import sample.models.framework.geometry.Point2d;
 
 /**
  * Created by Alexander on 04/11/16.
@@ -13,10 +13,12 @@ public class Mover extends Component {
 
     private Point2d destination;
 
-    public Mover(GameObject gameObject, double speed, Point2d destination) {
+    public Mover(GameObject gameObject, double speed) {
         super(gameObject);
         this.speed = speed;
-        this.destination = destination;
+
+        Transform transform = (Transform) getGameObject().firstComponentOfType(Transform.class);
+        this.destination = transform.getPosition();
     }
 
     public double getSpeed() {
@@ -37,6 +39,9 @@ public class Mover extends Component {
 
     @Override
     public void process(double interval) {
+        Transform transform = (Transform) getGameObject().firstComponentOfType(Transform.class);
 
+        Point2d newPos = transform.getPosition().movedTo(destination, speed * interval);
+        transform.setPosition(newPos);
     }
 }

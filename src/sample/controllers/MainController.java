@@ -15,7 +15,8 @@ import sample.models.framework.GameWorld;
 import sample.models.framework.components.Clock;
 import sample.models.framework.components.Renderer;
 import sample.models.framework.components.WorldSize;
-import sample.models.framework.structures.Size2d;
+import sample.models.framework.geometry.Point2d;
+import sample.models.framework.geometry.Size2d;
 
 
 public class MainController {
@@ -25,27 +26,40 @@ public class MainController {
 
     private TowerWars world;
 
-    public void test(ActionEvent actionEvent) {
+    private Timeline mainLoop;
+
+    public void start(ActionEvent actionEvent) {
         world = new TowerWars();
 
+        Timeline troop = new Timeline(new KeyFrame(Duration.millis(1100), ae -> {
+            world.spawnTroop("d", new Point2d(10 + Math.random() * 0.1, 10), 1, 200, "second", 1);
+        }));
+        troop.setCycleCount(Animation.INDEFINITE);
+        troop.play();
+
+        Timeline troop2 = new Timeline(new KeyFrame(Duration.millis(1200), ae -> {
+            world.spawnTroop("d", new Point2d(12 + Math.random() * 0.1, 10), 1, 200, "first", 1);
+        }));
+        troop2.setCycleCount(Animation.INDEFINITE);
+        troop2.play();
+
         // Main loop
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> {
+        mainLoop = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> {
             // Simulate
             world.process(1f / 25f);
+//            world.process(1f / 25f / 2);
+//            world.process(1f / 25f / 2);
 
             // Render
             renderMap(world);
 
             // Update time label
-            Clock clock = (Clock) (world.findByName("World").get(0).getComponents(Clock.class).get(0));
+            Clock clock = (Clock) (world.findByName("Global").get(0).getComponents(Clock.class).get(0));
             time.setText("Simulation time: " + clock.getTime());
-
-            // Update state label
-            state.setText(world.toString());
         }));
 
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        mainLoop.setCycleCount(Animation.INDEFINITE);
+        mainLoop.play();
     }
 
     private void renderMap(GameWorld world) {
@@ -56,7 +70,7 @@ public class MainController {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Solve scale
-        Size2d worldSize = ((WorldSize) world.firstByName("World").firstComponentOfType(WorldSize.class)).getSize();
+        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstComponentOfType(WorldSize.class)).getSize();
         double scale = Math.min(canvas.getWidth(), canvas.getHeight()) / Math.max(worldSize.width, worldSize.height);
 
         // Grid
@@ -71,7 +85,7 @@ public class MainController {
     }
 
     private void renderGrid(GraphicsContext gc, GameWorld world, double scale) {
-        Size2d worldSize = ((WorldSize) world.firstByName("World").firstComponentOfType(WorldSize.class)).getSize();
+        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstComponentOfType(WorldSize.class)).getSize();
 
         gc.setStroke(Color.WHITE);
 
@@ -88,5 +102,17 @@ public class MainController {
                     worldSize.width * scale,
                     i * scale + 0.5);
         }
+    }
+
+    public void pause(ActionEvent actionEvent) {
+        mainLoop.pause();
+    }
+
+    public void resume(ActionEvent actionEvent) {
+        mainLoop.play();
+    }
+
+    public void captureState(ActionEvent actionEvent) {
+        state.setText(world.toString());
     }
 }

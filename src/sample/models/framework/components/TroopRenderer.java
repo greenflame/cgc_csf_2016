@@ -23,7 +23,7 @@ public class TroopRenderer extends Renderer {
 
         gc.setFill(colorForPlayer(badge.getOwner()));
 
-        double k = deployer.isFinished()
+        double k = deployer.isDeployed()
                 ? 1f * lifeCrystal.getHealthRest() / lifeCrystal.getTotalHealth()
                 : (1 - deployer.getTimeRemain() / deployer.getInterval());
 

@@ -2,7 +2,7 @@ package sample.models.framework.components;
 
 import sample.models.framework.Component;
 import sample.models.framework.GameObject;
-import sample.models.framework.structures.Point2d;
+import sample.models.framework.geometry.Point2d;
 
 /**
  * Created by Alexander on 03/11/16.

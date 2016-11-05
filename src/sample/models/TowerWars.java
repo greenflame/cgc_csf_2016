@@ -3,8 +3,9 @@ package sample.models;
 import sample.models.framework.GameObject;
 import sample.models.framework.GameWorld;
 import sample.models.framework.components.*;
-import sample.models.framework.structures.Point2d;
-import sample.models.framework.structures.Size2d;
+import sample.models.framework.geometry.Circle;
+import sample.models.framework.geometry.Point2d;
+import sample.models.framework.geometry.Size2d;
 
 /**
  * Created by Alexander on 03/11/16.
@@ -12,21 +13,25 @@ import sample.models.framework.structures.Size2d;
 public class TowerWars extends GameWorld {
 
     public TowerWars() {
-        GameObject common = new GameObject(this, "World");
+        GameObject global = new GameObject(this, "Global");
 
-        Clock clock = new Clock(common);
-        common.getComponents().add(clock);
+        Clock clock = new Clock(global);
+        global.getComponents().add(clock);
 
-        WorldSize worldSize = new WorldSize(common, new Size2d(22, 22));
-        common.getComponents().add(worldSize);
+        WorldSize worldSize = new WorldSize(global, new Size2d(22, 22));
+        global.getComponents().add(worldSize);
 
-        getGameObjects().add(common);
+        PhysicService physicService = new PhysicService(global);
+        global.getComponents().add(physicService);
 
-        spawnTroop("fTroop", new Point2d(2, 3), 3, 500, "first");
-        spawnTroop("sTroop", new Point2d(10, 7), 3, 500, "second");
+        getGameObjects().add(global);
+
+        spawnTroop("fTroop", new Point2d(10, 7.5), 0, 500, "first", 1);
+        spawnTroop("sTroop", new Point2d(10, 7), 0, 500, "second", 1);
+        spawnTroop("sTroop", new Point2d(10, 6.5), 0, 500, "second", 1);
     }
 
-    public void spawnTroop(String name, Point2d pos, double deployTime, int health, String owner) {
+    public void spawnTroop(String name, Point2d pos, double deployTime, int health, String owner, double speed) {
         GameObject troop = new GameObject(this, name);
 
         Transform transform = new Transform(troop, pos, 0);
@@ -43,6 +48,15 @@ public class TowerWars extends GameWorld {
 
         Badge badge = new Badge(troop, owner);
         troop.getComponents().add(badge);
+
+        TroopNavigator troopNavigator = new TroopNavigator(troop);
+        troop.getComponents().add(troopNavigator);
+
+        Mover mover = new Mover(troop, speed);
+        troop.getComponents().add(mover);
+
+        PhysicBody physicBody = new PhysicBody(troop, new Circle(new Point2d(0, 0), 0.5), true);
+        troop.getComponents().add(physicBody);
 
         getGameObjects().add(troop);
     }

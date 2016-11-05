@@ -2,7 +2,7 @@ package sample.models.framework.components;
 
 import sample.models.framework.Component;
 import sample.models.framework.GameObject;
-import sample.models.framework.structures.Size2d;
+import sample.models.framework.geometry.Size2d;
 
 /**
  * Created by Alexander on 03/11/16.

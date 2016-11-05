@@ -18,7 +18,12 @@
             <Label text="World state:"/>
             <TextArea fx:id="state" wrapText="true"/>
 
-            <Button onAction="#test" text="Test"/>
+            <HBox spacing="10">
+                <Button onAction="#start" text="Start"/>
+                <Button onAction="#pause" text="Pause"/>
+                <Button onAction="#resume" text="Resume"/>
+                <Button onAction="#captureState" text="Capture world state"/>
+            </HBox>
         </VBox>
     </HBox>
 </GridPane>

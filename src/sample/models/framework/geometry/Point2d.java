@@ -1,4 +1,4 @@
-package sample.models.framework.structures;
+package sample.models.framework.geometry;
 
 /**
  * Created by Alexander on 25/10/16.
@@ -60,6 +60,19 @@ public class Point2d {
 
     public Point2i toInt() {
         return new Point2i((int)x, (int)y);
+    }
+
+    public Point2d movedTo(Point2d destination, double length) {
+        if (this.distanceTo(destination) > length) {
+            Point2d deltaPos = destination.sub(this).normalized().mul(length);
+            return this.add(deltaPos);
+        } else {
+            return destination;
+        }
+    }
+
+    public static Point2d random() {
+        return new Point2d(Math.random(), Math.random());
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Deployer extends Component {
         return timeRemain;
     }
 
-    public boolean isFinished() {
+    public boolean isDeployed() {
         return timeRemain == 0;
     }
 
