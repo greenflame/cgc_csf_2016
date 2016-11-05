@@ -58,6 +58,7 @@ public class PhysicService extends Component {
 
         Point2d resultForce = subj.getGameWorld().getGameObjects().stream()
                 .filter(obj -> obj.hasComponent(PhysicBody.class))  // Physic body
+                .filter(obj -> ((PhysicBody) obj.firstComponentOfType(PhysicBody.class)).isMovable()) // Movable
                 .filter(obj -> !obj.hasComponent(Deployer.class) || ((Deployer) obj.firstComponentOfType(Deployer.class)).isDeployed())  // Deployed
                 .filter(obj -> obj != subj) // Not this
                 .map(obj -> {
