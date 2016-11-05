@@ -4,14 +4,26 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import sample.models.framework.GameObject;
+import sample.models.framework.geometry.Circle;
 
 /**
  * Created by Alexander on 03/11/16.
  */
 public class TroopRenderer extends Renderer {
 
-    public TroopRenderer(GameObject gameObject) {
+    private Color color;
+
+    public TroopRenderer(GameObject gameObject, Color color) {
         super(gameObject);
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override
@@ -19,30 +31,22 @@ public class TroopRenderer extends Renderer {
         Transform transform = (Transform) getGameObject().firstComponentOfType(Transform.class);
         Deployer deployer = (Deployer) getGameObject().firstComponentOfType(Deployer.class);
         LifeCrystal lifeCrystal = (LifeCrystal) getGameObject().firstComponentOfType(LifeCrystal.class);
-        Badge badge = (Badge) getGameObject().firstComponentOfType(Badge.class);
+        PhysicBody physicBody = (PhysicBody) getGameObject().firstComponentOfType(PhysicBody.class);
 
-        gc.setFill(colorForPlayer(badge.getOwner()));
+        gc.setFill(color);
 
         double k = deployer.isDeployed()
                 ? 1f * lifeCrystal.getHealthRest() / lifeCrystal.getTotalHealth()
                 : (1 - deployer.getTimeRemain() / deployer.getInterval());
 
-        gc.fillArc((transform.getPosition().x - 0.5) * scale,
-                (transform.getPosition().y - 0.5) * scale,
-                scale,
-                scale,
+        double r = ((Circle) physicBody.getShape()).radius;
+
+        gc.fillArc((transform.getPosition().x - r) * scale,
+                (transform.getPosition().y - r) * scale,
+                2 * r * scale,
+                2 * r * scale,
                 0,
                 360 * k,
                 ArcType.ROUND);
-    }
-
-    private Color colorForPlayer(String player) {
-        switch (player) {
-            case "first":
-                return Color.rgb(60, 130, 100);
-            case "second":
-                return Color.rgb(130, 120, 60);
-        }
-        return Color.GRAY;
     }
 }

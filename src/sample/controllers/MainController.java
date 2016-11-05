@@ -31,24 +31,22 @@ public class MainController {
     public void start(ActionEvent actionEvent) {
         world = new TowerWars();
 
-//        Timeline troop = new Timeline(new KeyFrame(Duration.millis(800), ae -> {
-//            world.spawnTroop("d", new Point2d(5 + Math.random() * 0.1, 5), 1, 200, "second", 1);
-//        }));
-//        troop.setCycleCount(10);
-//        troop.play();
-//
-//        Timeline troop2 = new Timeline(new KeyFrame(Duration.millis(900), ae -> {
-//            world.spawnTroop("d", new Point2d(15 + Math.random() * 0.1, 15), 1, 200, "first", 1);
-//        }));
-//        troop2.setCycleCount(10);
-//        troop2.play();
+        Timeline troop = new Timeline(new KeyFrame(Duration.millis(200), ae -> {
+            world.spawnTroop("d", new Point2d(5 + Math.random() * 0.1, 5), 1, 200, "second", 1);
+        }));
+        troop.setCycleCount(10);
+        troop.play();
+
+        Timeline troop2 = new Timeline(new KeyFrame(Duration.millis(220), ae -> {
+            world.spawnTroop("d", new Point2d(15 + Math.random() * 0.1, 15), 1, 200, "first", 1);
+        }));
+        troop2.setCycleCount(10);
+        troop2.play();
 
         // Main loop
         mainLoop = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> {
             // Simulate
-//            world.process(1f / 25f);
-            world.process(1f / 25f / 2);
-            world.process(1f / 25f / 2);
+            world.process(1f / 25f);
 
             // Render
             renderMap(world);

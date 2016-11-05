@@ -21,10 +21,18 @@ public class GameWorld {
     }
 
     public void process(double interval) {
-        gameObjects.forEach(gameObject -> {
-            gameObject.getComponents().forEach(component -> {
-                component.process(interval);
-            });
+        gameObjects.stream()
+                .filter(gameObject -> !gameObject.getName().equals("Global"))
+                .forEach(gameObject -> processObject(gameObject, interval));
+
+        if (existsByName("Global")) {
+            processObject(firstByName("Global"), interval);
+        }
+    }
+
+    private void processObject(GameObject object, double interval) {
+        object.getComponents().forEach(component -> {
+            component.process(interval);
         });
     }
 
@@ -32,6 +40,10 @@ public class GameWorld {
         return gameObjects.stream()
                 .filter(gameObject -> gameObject.getName().equals(name))
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsByName(String name) {
+        return findByName(name).size() > 0;
     }
 
     public GameObject firstByName(String name) {
@@ -42,6 +54,10 @@ public class GameWorld {
         return gameObjects.stream()
                 .filter(gameObject -> gameObject.hasComponent(type))
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsByType(Class type) {
+        return findByType(type).size() > 0;
     }
 
     public GameObject firstByType(Class type) {

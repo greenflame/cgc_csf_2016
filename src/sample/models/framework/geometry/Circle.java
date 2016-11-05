@@ -18,39 +18,38 @@ public class Circle extends Shape {
     public boolean isIntersect(Shape s) {
 
         if (s instanceof Circle) {
-            return position.distanceTo(s.position) < radius + ((Circle) s).radius;
+            return isIntersect((Circle) s);
         }
 
         throw new NotImplementedException();
+    }
+
+    private boolean isIntersect(Circle c) {
+        return position.distanceTo(c.position) < radius + c.radius;
     }
 
     @Override
     public Point2d collisionPointFor(Shape s) {
 
         if (s instanceof Circle) {
-            Point2d relative = s.position.sub(position).normalized().mul(radius + ((Circle) s).radius);
-            return position.add(relative);
+            return collisionPointFor((Circle) s);
         }
 
         throw new NotImplementedException();
     }
 
-    @Override
-    public Point2d collisionForceFor(Shape s) {
-
-        if (s instanceof Circle) {
-            if (isIntersect(s)) {
-                return collisionPointFor(s).sub(s.position);
-            } else {
-                return new Point2d(0, 0);
-            }
-        }
-
-        throw new NotImplementedException();
+    private Point2d collisionPointFor(Circle c) {
+        Point2d relative = c.position.sub(position).normalized().mul(radius + c.radius);
+        return position.add(relative);
     }
 
     @Override
     public Shape moved(Point2d v) {
         return new Circle(position.add(v), radius);
+    }
+
+    @Override
+    public boolean containsPoint(Point2d p) {
+        return position.distanceTo(p) < radius;
     }
 }

@@ -5,72 +5,79 @@ import sample.models.framework.GameObject;
 import sample.models.framework.geometry.Point2d;
 import sample.models.framework.geometry.Shape;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Alexander on 04/11/16.
  */
 public class PhysicService extends Component {
 
-    public PhysicService(GameObject gameObject) {
+    private int iterations;
+
+    public PhysicService(GameObject gameObject, int iterations) {
         super(gameObject);
+        this.iterations = iterations;
+    }
+
+    public int getIterations() {
+        return iterations;
+    }
+
+    public void setIterations(int iterations) {
+        this.iterations = iterations;
     }
 
     @Override
     public void process(double interval) {
-        int iteration = 0;
-        int maxIterations = 20;
-        while (iterate() && iteration < maxIterations) {
-            iteration++;
+        for (int i = 0; i < iterations; i++) {
+            iterate();
         }
     }
 
-    public boolean iterate() {
-        Map<GameObject, Point2d> forces = new HashMap<>();
+    public void iterate() {
 
-        getGameObject().getGameWorld().getGameObjects().stream()
+        List<GameObject> physicBodies = getGameObject().getGameWorld().getGameObjects().stream()
                 .filter(subj -> subj.hasComponent(PhysicBody.class))    // Physic body
+                .filter(subj -> !subj.hasComponent(Deployer.class) ||
+                        ((Deployer) subj.firstComponentOfType(Deployer.class)).isDeployed())  // Deployed
+                .collect(Collectors.toList());
+
+        Collections.shuffle(physicBodies, new Random(System.nanoTime()));
+
+        List<GameObject> movable =  physicBodies.stream()
                 .filter(subj -> ((PhysicBody) subj.firstComponentOfType(PhysicBody.class)).isMovable()) // Movable
-                .filter(subj -> !subj.hasComponent(Deployer.class) || ((Deployer) subj.firstComponentOfType(Deployer.class)).isDeployed())  // Deployed
-                .forEach(gameObject -> {
-                    Point2d force = computeForceFor(gameObject);
+                .collect(Collectors.toList());
 
-                    if (!force.isZero()) {
-                        forces.put(gameObject, force);
-                    }
-                });
+        List<GameObject> obstacle =  physicBodies.stream()
+                .filter(subj -> !((PhysicBody) subj.firstComponentOfType(PhysicBody.class)).isMovable()) // Static
+                .collect(Collectors.toList());
 
-        forces.forEach((gameObject, force) -> {
-            Transform transform = (Transform) gameObject.firstComponentOfType(Transform.class);
-            transform.setPosition(transform.getPosition().add(force));
+        movable.forEach(subj -> {
+            PhysicBody pbSubj = (PhysicBody) subj.firstComponentOfType(PhysicBody.class);
+            Transform trSubj = (Transform) subj.firstComponentOfType(Transform.class);
+            Shape trShapeSubj = pbSubj.getShape().moved(trSubj.getPosition());
+
+            movable.stream().filter(obj -> obj != subj).forEach(obj -> {
+                PhysicBody pbObj = (PhysicBody) obj.firstComponentOfType(PhysicBody.class);
+                Transform trObj = (Transform) obj.firstComponentOfType(Transform.class);
+                Shape trShapeObj = pbObj.getShape().moved(trObj.getPosition());
+
+                Point2d forceObjSubj = trShapeObj.collisionForceFor(trShapeSubj);
+
+                trSubj.setPosition(trSubj.getPosition().add(forceObjSubj.mul(0.5)));
+                trObj.setPosition(trObj.getPosition().add(forceObjSubj.mul(-0.5)));
+            });
+
+            obstacle.forEach(obj -> {
+                PhysicBody pbObj = (PhysicBody) obj.firstComponentOfType(PhysicBody.class);
+                Transform trObj = (Transform) obj.firstComponentOfType(Transform.class);
+                Shape trShapeObj = pbObj.getShape().moved(trObj.getPosition());
+
+                Point2d forceObjSubj = trShapeObj.collisionForceFor(trShapeSubj);
+
+                trSubj.setPosition(trSubj.getPosition().add(forceObjSubj));
+            });
         });
-
-        return forces.values().stream().count() != 0;
-    }
-
-    public Point2d computeForceFor(GameObject subj) {
-        PhysicBody subjPb = (PhysicBody) subj.firstComponentOfType(PhysicBody.class);
-        Transform subjTf = (Transform) subj.firstComponentOfType(Transform.class);
-
-        Shape subjTransformedShape = subjPb.getShape().moved(subjTf.getPosition());
-
-        Point2d resultForce = subj.getGameWorld().getGameObjects().stream()
-                .filter(obj -> obj.hasComponent(PhysicBody.class))  // Physic body
-                .filter(obj -> ((PhysicBody) obj.firstComponentOfType(PhysicBody.class)).isMovable()) // Movable
-                .filter(obj -> !obj.hasComponent(Deployer.class) || ((Deployer) obj.firstComponentOfType(Deployer.class)).isDeployed())  // Deployed
-                .filter(obj -> obj != subj) // Not this
-                .map(obj -> {
-                    PhysicBody objPb = (PhysicBody) obj.firstComponentOfType(PhysicBody.class);
-                    Transform objTf = (Transform) obj.firstComponentOfType(Transform.class);
-
-                    Shape objTransformedShape = objPb.getShape().moved(objTf.getPosition());
-
-                    return objTransformedShape.collisionForceFor(subjTransformedShape);
-                })
-                .reduce(new Point2d(0, 0), Point2d::add);
-
-        return resultForce;
     }
 }

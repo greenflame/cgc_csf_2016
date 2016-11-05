@@ -15,7 +15,15 @@ public abstract class Shape {
 
     abstract public Point2d collisionPointFor(Shape s);
 
-    abstract public Point2d collisionForceFor(Shape s);
+    public Point2d collisionForceFor(Shape s) {
+        if (isIntersect(s)) {
+            return collisionPointFor(s).sub(s.position);
+        } else {
+            return new Point2d(0, 0);
+        }
+    }
 
     abstract public Shape moved(Point2d v);
+
+    abstract public boolean containsPoint(Point2d p);
 }
