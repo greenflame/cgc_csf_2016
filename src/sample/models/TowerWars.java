@@ -32,7 +32,7 @@ public class TowerWars extends GameWorld {
         spawnTroop("sTroop", new Point2d(10, 7), 0, 500, "second", 1);
         spawnTroop("sTroop", new Point2d(10, 6.5), 0, 500, "second", 1);
 
-        spawnObstacle("o", new Point2d(10, 10), 1.5);
+        spawnObstacle("o", new Point2d(12, 12), 1.5);
     }
 
     public void spawnTroop(String name, Point2d pos, double deployTime, int health, String owner, double speed) {
@@ -74,7 +74,7 @@ public class TowerWars extends GameWorld {
         ObstacleRenderer obstacleRenderer = new ObstacleRenderer(obstacle, Color.GRAY);
         obstacle.getComponents().add(obstacleRenderer);
 
-        PhysicBody physicBody = new PhysicBody(obstacle, new Square(new Point2d(0, 0), radius), false);
+        PhysicBody physicBody = new PhysicBody(obstacle, new Square(new Point2d(0, 0), radius), true);
         obstacle.getComponents().add(physicBody);
 
         getGameObjects().add(obstacle);

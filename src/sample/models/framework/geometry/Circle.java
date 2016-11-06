@@ -1,5 +1,6 @@
 package sample.models.framework.geometry;
 
+import com.sun.org.glassfish.external.probe.provider.PluginPoint;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -21,6 +22,10 @@ public class Circle extends Shape {
             return isIntersect((Circle) s);
         }
 
+        if (s instanceof Square) {
+            return s.isIntersect(this);
+        }
+
         throw new NotImplementedException();
     }
 
@@ -33,6 +38,11 @@ public class Circle extends Shape {
 
         if (s instanceof Circle) {
             return collisionPointFor((Circle) s);
+        }
+
+        if (s instanceof Square) {
+            Point2d cp = s.collisionPointFor(this);
+            return s.position.sub(cp).add(position);
         }
 
         throw new NotImplementedException();
