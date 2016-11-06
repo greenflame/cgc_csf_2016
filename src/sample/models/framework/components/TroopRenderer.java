@@ -28,10 +28,10 @@ public class TroopRenderer extends Renderer {
 
     @Override
     public void render(GraphicsContext gc, double scale) {
-        Transform transform = (Transform) getGameObject().firstComponentOfType(Transform.class);
-        Deployer deployer = (Deployer) getGameObject().firstComponentOfType(Deployer.class);
-        LifeCrystal lifeCrystal = (LifeCrystal) getGameObject().firstComponentOfType(LifeCrystal.class);
-        PhysicBody physicBody = (PhysicBody) getGameObject().firstComponentOfType(PhysicBody.class);
+        Transform transform = (Transform) getGameObject().firstOfType(Transform.class);
+        Deployer deployer = (Deployer) getGameObject().firstOfType(Deployer.class);
+        LifeCrystal lifeCrystal = (LifeCrystal) getGameObject().firstOfType(LifeCrystal.class);
+        PhysicBody physicBody = (PhysicBody) getGameObject().firstOfType(PhysicBody.class);
 
         gc.setFill(color);
 

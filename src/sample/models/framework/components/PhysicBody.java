@@ -11,12 +11,12 @@ public class PhysicBody extends Component {
 
     private Shape shape;
 
-    private boolean isMovable;
+    private double mass;
 
-    public PhysicBody(GameObject gameObject, Shape shape, boolean isMovable) {
+    public PhysicBody(GameObject gameObject, Shape shape, double mass) {
         super(gameObject);
         this.shape = shape;
-        this.isMovable = isMovable;
+        this.mass = mass;
     }
 
     public Shape getShape() {
@@ -27,11 +27,11 @@ public class PhysicBody extends Component {
         this.shape = shape;
     }
 
-    public boolean isMovable() {
-        return isMovable;
+    public double getMass() {
+        return mass;
     }
 
-    public void setMovable(boolean movable) {
-        isMovable = movable;
+    public void setMass(double mass) {
+        this.mass = mass;
     }
 }

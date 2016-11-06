@@ -48,7 +48,7 @@ public class GameObject {
         return getComponents(type).size() > 0;
     }
 
-    public Component firstComponentOfType(Class type) {
+    public Component firstOfType(Class type) {
         return getComponents(type).get(0);
     }
 

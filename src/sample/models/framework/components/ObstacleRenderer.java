@@ -28,8 +28,8 @@ public class ObstacleRenderer extends Renderer {
 
     @Override
     public void render(GraphicsContext gc, double scale) {
-        Transform transform = (Transform) getGameObject().firstComponentOfType(Transform.class);
-        PhysicBody physicBody = (PhysicBody) getGameObject().firstComponentOfType(PhysicBody.class);
+        Transform transform = (Transform) getGameObject().firstOfType(Transform.class);
+        PhysicBody physicBody = (PhysicBody) getGameObject().firstOfType(PhysicBody.class);
 
         gc.setFill(color);
 

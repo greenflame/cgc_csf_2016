@@ -1,6 +1,8 @@
 package sample.models.framework.geometry;
 
+import com.sun.corba.se.impl.corba.ContextListImpl;
 import com.sun.org.glassfish.external.probe.provider.PluginPoint;
+import javafx.scene.paint.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -19,38 +21,28 @@ public class Circle extends Shape {
     public boolean isIntersect(Shape s) {
 
         if (s instanceof Circle) {
-            return isIntersect((Circle) s);
+            return Collisions.isIntersect(this, (Circle) s);
         }
 
         if (s instanceof Square) {
-            return s.isIntersect(this);
+            return Collisions.isIntersect(this, (Square) s);
         }
 
         throw new NotImplementedException();
-    }
-
-    private boolean isIntersect(Circle c) {
-        return position.distanceTo(c.position) < radius + c.radius;
     }
 
     @Override
     public Point2d collisionPointFor(Shape s) {
 
         if (s instanceof Circle) {
-            return collisionPointFor((Circle) s);
+            return Collisions.collisionPointFor(this, (Circle) s);
         }
 
         if (s instanceof Square) {
-            Point2d cp = s.collisionPointFor(this);
-            return s.position.sub(cp).add(position);
+            return Collisions.collisionPointFor(this, (Square) s);
         }
 
         throw new NotImplementedException();
-    }
-
-    private Point2d collisionPointFor(Circle c) {
-        Point2d relative = c.position.sub(position).normalized().mul(radius + c.radius);
-        return position.add(relative);
     }
 
     @Override

@@ -20,6 +20,10 @@ public class GameWorld {
         return gameObjects;
     }
 
+    public void setGameObjects(List<GameObject> gameObjects) {
+        this.gameObjects = gameObjects;
+    }
+
     public void process(double interval) {
         gameObjects.stream()
                 .filter(gameObject -> !gameObject.getName().equals("Global"))

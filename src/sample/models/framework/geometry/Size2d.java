@@ -14,11 +14,19 @@ public class Size2d {
         this.height = height;
     }
 
+    public Size2d mul(double k) {
+        return new Size2d(width * k, height * k);
+    }
+
     public Size2d floor() {
         return new Size2d(Math.floor(width), Math.floor(height));
     }
 
-    public Point2i toInt() {
-        return new Point2i((int)width, (int)height);
+    public Size2i toInt() {
+        return new Size2i((int)width, (int)height);
+    }
+
+    public Point2d toPoint() {
+        return new Point2d(width, height);
     }
 }

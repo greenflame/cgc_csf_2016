@@ -25,4 +25,22 @@ public class Point2i {
     public Point2d toDouble() {
         return new Point2d(x, y);
     }
+
+    public Size2i toSize() {
+        return new Size2i(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", x, y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Point2i) {
+            return x == ((Point2i) obj).x && y == ((Point2i) obj).y;
+        } else {
+            return false;
+        }
+    }
 }

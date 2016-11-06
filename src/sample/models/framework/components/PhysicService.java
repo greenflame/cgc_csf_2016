@@ -40,44 +40,33 @@ public class PhysicService extends Component {
         List<GameObject> physicBodies = getGameObject().getGameWorld().getGameObjects().stream()
                 .filter(subj -> subj.hasComponent(PhysicBody.class))    // Physic body
                 .filter(subj -> !subj.hasComponent(Deployer.class) ||
-                        ((Deployer) subj.firstComponentOfType(Deployer.class)).isDeployed())  // Deployed
+                        ((Deployer) subj.firstOfType(Deployer.class)).isDeployed())  // Deployed
                 .collect(Collectors.toList());
 
         Collections.shuffle(physicBodies, new Random(System.nanoTime()));
 
-        List<GameObject> movable =  physicBodies.stream()
-                .filter(subj -> ((PhysicBody) subj.firstComponentOfType(PhysicBody.class)).isMovable()) // Movable
-                .collect(Collectors.toList());
+        for (int i = 0; i < physicBodies.size() - 1; i++) {
+            GameObject o1 = physicBodies.get(i);
 
-        List<GameObject> obstacle =  physicBodies.stream()
-                .filter(subj -> !((PhysicBody) subj.firstComponentOfType(PhysicBody.class)).isMovable()) // Static
-                .collect(Collectors.toList());
+            PhysicBody pb1 = (PhysicBody) o1.firstOfType(PhysicBody.class);
+            Transform tr1 = (Transform) o1.firstOfType(Transform.class);
+            Shape trShape1 = pb1.getShape().moved(tr1.getPosition());
 
-        movable.forEach(subj -> {
-            PhysicBody pbSubj = (PhysicBody) subj.firstComponentOfType(PhysicBody.class);
-            Transform trSubj = (Transform) subj.firstComponentOfType(Transform.class);
-            Shape trShapeSubj = pbSubj.getShape().moved(trSubj.getPosition());
+            for (int j = i + 1; j < physicBodies.size(); j++) {
+                GameObject o2 = physicBodies.get(j);
 
-            movable.stream().filter(obj -> obj != subj).forEach(obj -> {
-                PhysicBody pbObj = (PhysicBody) obj.firstComponentOfType(PhysicBody.class);
-                Transform trObj = (Transform) obj.firstComponentOfType(Transform.class);
-                Shape trShapeObj = pbObj.getShape().moved(trObj.getPosition());
+                PhysicBody pb2 = (PhysicBody) o2.firstOfType(PhysicBody.class);
+                Transform tr2 = (Transform) o2.firstOfType(Transform.class);
+                Shape trShape2 = pb2.getShape().moved(tr2.getPosition());
 
-                Point2d forceObjSubj = trShapeObj.collisionForceFor(trShapeSubj);
+                Point2d force12 = trShape1.collisionForceFor(trShape2);
 
-                trSubj.setPosition(trSubj.getPosition().add(forceObjSubj.mul(0.5)));
-                trObj.setPosition(trObj.getPosition().add(forceObjSubj.mul(-0.5)));
-            });
+                double k1 = pb2.getMass() / (pb1.getMass() + pb2.getMass());
+                double k2 = pb1.getMass() / (pb1.getMass() + pb2.getMass());
 
-            obstacle.forEach(obj -> {
-                PhysicBody pbObj = (PhysicBody) obj.firstComponentOfType(PhysicBody.class);
-                Transform trObj = (Transform) obj.firstComponentOfType(Transform.class);
-                Shape trShapeObj = pbObj.getShape().moved(trObj.getPosition());
-
-                Point2d forceObjSubj = trShapeObj.collisionForceFor(trShapeSubj);
-
-                trSubj.setPosition(trSubj.getPosition().add(forceObjSubj));
-            });
-        });
+                tr1.setPosition(tr1.getPosition().add(force12.mul(-k1)));
+                tr2.setPosition(tr2.getPosition().add(force12.mul(k2)));
+            }
+        }
     }
 }

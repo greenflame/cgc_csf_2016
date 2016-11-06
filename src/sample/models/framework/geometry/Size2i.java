@@ -18,7 +18,7 @@ public class Size2i {
         return new Size2d(width, height);
     }
 
-    public boolean isPointExists(Point2i p) {
+    public boolean containsPoint(Point2i p) {
         return  p.x >= 0 && p.x < width &&
                 p.y >= 0 && p.y < height;
     }

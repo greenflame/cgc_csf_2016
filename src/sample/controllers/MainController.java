@@ -32,16 +32,22 @@ public class MainController {
         world = new TowerWars();
 
         Timeline troop = new Timeline(new KeyFrame(Duration.millis(200), ae -> {
-            world.spawnTroop("d", new Point2d(5 + Math.random() * 0.1, 5), 1, 200, "second", 1);
+            world.spawnTroop("d", new Point2d(5 + Math.random(), 5 + Math.random()), 1, 200, "second", 1);
         }));
         troop.setCycleCount(10);
         troop.play();
 
         Timeline troop2 = new Timeline(new KeyFrame(Duration.millis(220), ae -> {
-            world.spawnTroop("d", new Point2d(15 + Math.random() * 0.1, 15), 1, 200, "first", 1);
+            world.spawnTroop("d", new Point2d(15 + Math.random(), 15 + Math.random()), 1, 200, "first", 1);
         }));
         troop2.setCycleCount(10);
         troop2.play();
+
+        Timeline troopOb = new Timeline(new KeyFrame(Duration.millis(210), ae -> {
+            world.spawnObstacle("ob", new Point2d(11 + Math.random(), 10 + Math.random()), 1);
+        }));
+        troopOb.setCycleCount(10);
+        troopOb.play();
 
         // Main loop
         mainLoop = new Timeline(new KeyFrame(Duration.millis(1000 / 25), ae -> {
@@ -68,7 +74,7 @@ public class MainController {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Solve scale
-        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstComponentOfType(WorldSize.class)).getSize();
+        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstOfType(WorldSize.class)).getSize();
         double scale = Math.min(canvas.getWidth(), canvas.getHeight()) / Math.max(worldSize.width, worldSize.height);
 
         // Grid
@@ -83,7 +89,7 @@ public class MainController {
     }
 
     private void renderGrid(GraphicsContext gc, GameWorld world, double scale) {
-        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstComponentOfType(WorldSize.class)).getSize();
+        Size2d worldSize = ((WorldSize) world.firstByName("Global").firstOfType(WorldSize.class)).getSize();
 
         gc.setStroke(Color.WHITE);
 
